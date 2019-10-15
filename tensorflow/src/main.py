@@ -1,10 +1,11 @@
 import tensorflow as tf
+import numpy as np
 import pathlib
 
-NUM_STEPS = 1000
-MINIBATCH_SIZE = 100
-IMG_WIDTH = 1920/5
-IMG_HEIGHT = 1080/5
+NUM_STEPS = 10
+MINIBATCH_SIZE = 5
+IMG_WIDTH = 1920
+IMG_HEIGHT = 1080
 
 
 def load_images():
@@ -42,6 +43,58 @@ def process_path(file_path):
     return img, label
 
 
+def setup(width=IMG_WIDTH, height=IMG_HEIGHT):
+    x = tf.placeholder(tf.float32, [None, width * height])  # size of pictures?
+    W = tf.Variable(tf.zeros([width * height, 1]))
+
+    y_true = tf.placeholder(tf.float32, [None, 1])
+    y_pred = tf.matmul(x, W)
+
+    cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+        logits=y_pred, labels=y_true))
+
+    gd_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+
+    correct_mask = tf.equal(tf.argmax(y_pred, 1), tf.argmax(y_true, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_mask, tf.float32))
+
+    return gd_step, accuracy, y_true, x
+
+
+def next_batch(num, images, labels):
+    '''
+    Return a total of `num` random samples and labels.
+    '''
+    idx = np.arange(0, len(images))
+    np.random.shuffle(idx)
+    idx = idx[:num]
+    data_shuffle = [images[i].eval() for i in idx]
+    labels_shuffle = [[labels[i]] for i in idx]
+
+    return np.asarray(data_shuffle), np.asarray(labels_shuffle)
+
+
+def train_and_test(gd_step, accuracy, y_true, x, images, labels):
+    with tf.Session() as sess:
+        # Train
+        sess.run(tf.global_variables_initializer())
+
+        for i in range(NUM_STEPS):
+            batch_xs, batch_ys = next_batch(MINIBATCH_SIZE, images, labels)
+            # print("batch_xs: {}\nbatch_ys: {}".format(batch_xs, batch_ys))
+            sess.run(gd_step, feed_dict={x: batch_xs, y_true: batch_ys})
+
+        # Test
+        return sess.run(accuracy, feed_dict={x: images, y_true: labels})
+
+
 if __name__ == '__main__':
+    images = []
+    labels = []
     for file in load_images():
         img, label = process_path(str(file)[0:(str(file).rfind("."))])
+        images.append(img)
+        labels.append(label)
+
+    gd_step, accuracy, y_true, x = setup()
+    print("Accuracy: {:.4}%".format(train_and_test(gd_step, accuracy, y_true, x, images, labels) * 100))
