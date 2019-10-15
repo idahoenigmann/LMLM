@@ -1,7 +1,6 @@
 import tensorflow as tf
 import pathlib
 
-DATA_DIR = '/tmp/data'
 NUM_STEPS = 1000
 MINIBATCH_SIZE = 100
 IMG_WIDTH = 1920/5
@@ -14,18 +13,15 @@ def load_images():
         fname='grayscale_renders', untar=True)
     data_dir = pathlib.Path(data_dir)
 
-    """data_dir = tf.keras.utils.get_file(
-        origin='https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
-        fname='flower_photos', untar=True)
-    data_dir = pathlib.Path(data_dir)"""
-
     image_count = len(list(data_dir.glob('*.jpg')))
+    print("found {} images in path {}".format(image_count, data_dir))
+
     return list(data_dir.glob('*.jpg'))
 
 
 def get_label(file_path):
-    file = open("{}.txt".format(file_path), "w+")
-    label = file.readline()
+    file = open("{}.txt".format(file_path), "r")
+    label = file.read()
     file.close()
     return label
 
@@ -35,7 +31,6 @@ def decode_img(img):
     img = tf.image.decode_jpeg(img, channels=1)
     # Use `convert_image_dtype` to convert to floats in the [0,1] range.
     img = tf.image.convert_image_dtype(img, tf.float32)
-    # resize the image to the desired size.
     return img
 
 
@@ -49,4 +44,4 @@ def process_path(file_path):
 
 if __name__ == '__main__':
     for file in load_images():
-        process_path(str(file)[(str(file).find("."))])
+        img, label = process_path(str(file)[0:(str(file).rfind("."))])
