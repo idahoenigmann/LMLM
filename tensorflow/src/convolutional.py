@@ -2,8 +2,8 @@ import tensorflow as tf
 import numpy as np
 import pathlib
 
-IMG_WIDTH = 1920
-IMG_HEIGHT = 1080
+IMG_WIDTH = 192
+IMG_HEIGHT = 108
 STEPS = 10
 
 """
@@ -129,7 +129,8 @@ if __name__ == '__main__':
     conv2_pool = max_pool_2x2(conv2)
 
     # print(conv2_pool.shape)
-    conv2_flat = tf.reshape(conv2_pool, [-1, 480*270*64])
+    # conv2_flat = tf.reshape(conv2_pool, [-1, int((IMG_WIDTH * IMG_HEIGHT)/4) * 64])
+    conv2_flat = tf.reshape(conv2_pool, [-1, int(IMG_WIDTH/4 * IMG_HEIGHT/4) * 64])
     full_1 = tf.nn.relu(full_layer(conv2_flat, 1024))
 
     keep_prob = tf.placeholder(tf.float32)

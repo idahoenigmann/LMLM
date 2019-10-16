@@ -4,7 +4,7 @@ import numpy as np
 from argparse import ArgumentParser
 
 # -d ../renders/Suzanne.M -o saturated
-options = ['greyscale', 'saturated']
+options = ['greyscale', 'saturated', 'downscaled']
 
 parser = ArgumentParser(description='Manipulate images in directory')
 parser.add_argument('-d', help='the directory to process',
@@ -45,6 +45,15 @@ for file in contents:
             hsv = cv2.merge([h, s, v])
             saturated = cv2.cvtColor(hsv.astype('uint8'), cv2.COLOR_HSV2BGR)
             cv2.imwrite('{}/{}'.format(newdir_path, filename), saturated, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+
+        if args.o == options[2]:
+            scale_percent = 10  # percent of original size
+            width = int(image.shape[1] * scale_percent / 100)
+            height = int(image.shape[0] * scale_percent / 100)
+            dim = (width, height)
+
+            downscaled = cv2.resize(image, dim)
+            cv2.imwrite('{}/{}'.format(newdir_path, filename), downscaled, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
 
         else:
             print('Unknown option: {}'.format(args.o))
