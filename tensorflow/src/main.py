@@ -58,7 +58,9 @@ def setup(width=IMG_WIDTH, height=IMG_HEIGHT):
     correct_mask = tf.equal(tf.argmax(y_pred, 1), tf.argmax(y_true, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_mask, tf.float32))
 
-    return gd_step, accuracy, y_true, x
+    keep_prob = tf.placeholder(tf.float32)
+
+    return gd_step, accuracy, y_true, x, keep_prob
 
 
 def next_batch(num, images, labels):
@@ -68,23 +70,32 @@ def next_batch(num, images, labels):
     idx = np.arange(0, len(images))
     np.random.shuffle(idx)
     idx = idx[:num]
-    data_shuffle = [images[i].eval() for i in idx]
+    # print(images[0].eval().shape)
+    # print(images[0].eval().reshape(1080 * 1920).shape)
+    data_shuffle = [images[i].eval().reshape(IMG_HEIGHT * IMG_WIDTH) for i in idx]
     labels_shuffle = [[labels[i]] for i in idx]
 
     return np.asarray(data_shuffle), np.asarray(labels_shuffle)
 
 
-def train_and_test(gd_step, accuracy, y_true, x, images, labels):
+def train_and_test(gd_step, accuracy, y_true, x, keep_prob, images, labels):
     with tf.Session() as sess:
         # Train
         sess.run(tf.global_variables_initializer())
 
         for i in range(NUM_STEPS):
             batch_xs, batch_ys = next_batch(MINIBATCH_SIZE, images, labels)
-            # print("batch_xs: {}\nbatch_ys: {}".format(batch_xs, batch_ys))
+            # print("batch_xs.shape: {}\nbatch_ys.shape: {}".format(batch_xs.shape, batch_ys.shape))
+
+            if i % 1 == 0:
+                train_accuracy = sess.run(accuracy, feed_dict={x: batch_xs, y_true: batch_ys, keep_prob: 1.0})
+                print("step {}, training accuracy {}".format(i, train_accuracy))
+
             sess.run(gd_step, feed_dict={x: batch_xs, y_true: batch_ys})
 
+
         # Test
+        images, labels = next_batch(1000, images, labels)
         return sess.run(accuracy, feed_dict={x: images, y_true: labels})
 
 
@@ -96,5 +107,5 @@ if __name__ == '__main__':
         images.append(img)
         labels.append(label)
 
-    gd_step, accuracy, y_true, x = setup()
-    print("Accuracy: {:.4}%".format(train_and_test(gd_step, accuracy, y_true, x, images, labels) * 100))
+    gd_step, accuracy, y_true, x, keep_prob = setup()
+    print("Accuracy: {:.4}%".format(train_and_test(gd_step, accuracy, y_true, x, keep_prob, images, labels) * 100))
