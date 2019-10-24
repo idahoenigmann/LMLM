@@ -63,8 +63,8 @@ for file in contents:
             cv2.imwrite('{}/{}'.format(newdir_path, filename), crop_img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
 
         elif args.o == options[4]:    # brightness
-            alpha = 1.3  # contrast
-            beta = 40  # brightness
+            alpha = 1  # contrast
+            beta = 60  # brightness
             bright_img = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
             cv2.imwrite('{}/{}'.format(newdir_path, filename), bright_img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
 
