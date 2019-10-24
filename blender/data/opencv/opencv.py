@@ -4,7 +4,7 @@ import numpy as np
 from argparse import ArgumentParser
 
 # -d ../renders/Suzanne.M -o saturated
-options = ['greyscale', 'saturated', 'downscaled', 'cropping']
+options = ['greyscale', 'saturated', 'downscaled', 'cropping', 'brightness']
 
 parser = ArgumentParser(description='Manipulate images in directory')
 parser.add_argument('-d', help='the directory to process',
@@ -61,6 +61,12 @@ for file in contents:
             crop_margin_height = int(image.shape[0] * crop_margin_percent / 100)
             crop_img = image[crop_margin_width:-crop_margin_width, crop_margin_height:-crop_margin_height]
             cv2.imwrite('{}/{}'.format(newdir_path, filename), crop_img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+
+        elif args.o == options[4]:    # brightness
+            alpha = 1.3  # contrast
+            beta = 40  # brightness
+            bright_img = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
+            cv2.imwrite('{}/{}'.format(newdir_path, filename), bright_img, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
 
         else:
             print('Unknown option: {}'.format(args.o))
