@@ -1,7 +1,5 @@
 import tensorflow as tf
 
-IMG_WIDTH = 192
-IMG_HEIGHT = 108
 STEPS = 10
 
 """

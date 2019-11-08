@@ -15,5 +15,14 @@ if __name__ == '__main__':
         images.append(img)
         labels.append(label)
 
-    for i in range(0, len(images)):
-        print("{} {}".format(images[i].shape, labels[i]))
+    print("image: {}; label: {}".format(images[0].shape, labels[0].shape))
+
+    model = tf.keras.Sequential()
+    dense_layer = tf.keras.layers.Dense(5, input_shape=images[0].shape)
+    model.add(dense_layer)
+
+    model.compile(loss="sparse_categorical_crossentropy",
+        optimizer="SGD",
+        metrics=['accuracy'])
+
+    print(model.fit(images, labels, steps_per_epoch=10))

@@ -1,9 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import pathlib
+from PIL import Image
 
-IMG_WIDTH = 192
-IMG_HEIGHT = 108
 STEPS = 10
 
 """
@@ -33,14 +32,16 @@ def get_label(file_path):
     file = open("{}.txt".format(file_path), "r")
     label = file.read()
     file.close()
-    return label
+    return tf.constant(label, shape=(1, 1))
 
 
-def decode_img(img):
+def decode_img(img, width, height):
     # convert the compressed string to a 3D uint8 tensor
     img = tf.image.decode_jpeg(img, channels=1)
     # Use `convert_image_dtype` to convert to floats in the [0,1] range.
     img = tf.image.convert_image_dtype(img, tf.float32)
+    img = tf.reshape(img, [width * height])
+    # img = tf.reshape(img, [width * height])
     return img
 
 
@@ -48,7 +49,10 @@ def process_path(file_path):
     label = get_label(file_path)
     # load the raw data from the file as a string
     img = tf.io.read_file(file_path + ".jpg")
-    img = decode_img(img)
+    image = Image.open(file_path + ".jpg")
+    # image.show()
+    width, height = image.size
+    img = decode_img(img, width, height)
     return img, label
 
 
@@ -61,7 +65,7 @@ def next_batch(num, images, labels):
     idx = idx[:num]
     # print(images[0].eval().shape)
     # print(images[0].eval().reshape(1080 * 1920).shape)
-    data_shuffle = [images[i].eval().reshape(IMG_HEIGHT * IMG_WIDTH) for i in idx]
+    data_shuffle = [images[i].eval() for i in idx]
     labels_shuffle = [[labels[i]] for i in idx]
 
     return np.asarray(data_shuffle), np.asarray(labels_shuffle)
