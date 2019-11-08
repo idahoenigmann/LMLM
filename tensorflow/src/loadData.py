@@ -32,16 +32,17 @@ def get_label(file_path):
     file = open("{}.txt".format(file_path), "r")
     label = file.read()
     file.close()
-    return tf.constant(label, shape=(1, 1))
+    # return tf.constant(label, shape=(1, 1))
+    return float(label)
 
 
 def decode_img(img, width, height):
     # convert the compressed string to a 3D uint8 tensor
     img = tf.image.decode_jpeg(img, channels=1)
+    print(img.shape)
     # Use `convert_image_dtype` to convert to floats in the [0,1] range.
     img = tf.image.convert_image_dtype(img, tf.float32)
-    img = tf.reshape(img, [width * height])
-    # img = tf.reshape(img, [width * height])
+    img = tf.reshape(img, [width * height, 1])
     return img
 
 

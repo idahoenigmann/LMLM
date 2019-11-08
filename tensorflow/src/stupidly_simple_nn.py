@@ -1,13 +1,7 @@
 import tensorflow as tf
-
-#from loadData import *
-#from setupNN import *
-
 import loadData
-import setupNN
 
 if __name__ == '__main__':
-
     images = []
     labels = []
     for file in loadData.load_images():
@@ -15,14 +9,25 @@ if __name__ == '__main__':
         images.append(img)
         labels.append(label)
 
-    print("image: {}; label: {}".format(images[0].shape, labels[0].shape))
+    """
+    images_t = tf.constant(images, shape=(100, 20736, 1))
+    labels_t = tf.constant(labels, shape=(100,))
+    
+    images_t[0, 0, 0] = 
+    """
+
+    # print("image: {}; label: {}".format(images[0].shape, len(labels)))
 
     model = tf.keras.Sequential()
-    dense_layer = tf.keras.layers.Dense(5, input_shape=images[0].shape)
+    # dense_layer = tf.keras.layers.Dense(1, input_shape=(192 * 108, 1))
+    dense_layer = tf.keras.layers.Dense(1, input_shape=(100, 192 * 108, 1))
+    # dense_layer = tf.keras.layers.Dense(1, input_dim=1)
     model.add(dense_layer)
+
+    model.summary()
 
     model.compile(loss="sparse_categorical_crossentropy",
         optimizer="SGD",
         metrics=['accuracy'])
 
-    print(model.fit(images, labels, steps_per_epoch=10))
+    print(model.fit(images, labels, steps_per_epoch=10, batch_size=10))
