@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import pathlib
 from PIL import Image
+from keras.preprocessing.image import load_img, img_to_array
 
 STEPS = 10
 
@@ -48,12 +49,11 @@ def decode_img(img, width, height):
 
 def process_path(file_path):
     label = get_label(file_path)
-    # load the raw data from the file as a string
-    img = tf.io.read_file(file_path + ".jpg")
-    image = Image.open(file_path + ".jpg")
-    # image.show()
-    width, height = image.size
-    img = decode_img(img, width, height)
+
+    img = load_img(file_path + ".jpg", grayscale=True)
+    img = img_to_array(img)
+    # img = tf.reshape(img, (1,) + img.shape)
+
     return img, label
 
 
