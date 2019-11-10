@@ -41,7 +41,7 @@ def decode_img(img, width, height):
     print(img.shape)
     # Use `convert_image_dtype` to convert to floats in the [0,1] range.
     img = tf.image.convert_image_dtype(img, tf.float32)
-    img = tf.reshape(img, [width * height, 1])
+    img = tf.reshape(img, [width, height])
     return img
 
 

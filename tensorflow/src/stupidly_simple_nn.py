@@ -13,15 +13,21 @@ if __name__ == '__main__':
     images_np = np.asarray(images)
     labels_np = np.asarray(labels)
 
-    images_np = tf.reshape(images_np, [100, 108 * 192])
+    print(images_np.shape)
+
+    images_np = tf.reshape(images_np, [100, 192, 108, 1])
     labels_np = tf.reshape(labels_np, [100, 1])
 
     print("image: {}; label: {}".format(images_np.shape, labels_np.shape))
 
-    model = tf.keras.Sequential()
-    dense_layer = tf.keras.layers.Dense(1, input_shape=(images_np.shape[1],))
-
-    model.add(dense_layer)
+    model = tf.keras.Sequential([
+        tf.keras.layers.Conv2D(32, 5, activation="relu", input_shape=(192, 108, 1), name="conv2D_1"),
+        tf.keras.layers.MaxPooling2D(2, name="maxPooling2D_1"),
+        tf.keras.layers.Conv2D(64, 5, activation="relu", name="conv2D_2"),
+        tf.keras.layers.MaxPooling2D(2, name="maxPooling2D_2"),
+        tf.keras.layers.Flatten(name="flatten_1"),
+        tf.keras.layers.Dense(1, name="dense_1")
+    ])
     model.summary()
 
     model.compile(loss="sparse_categorical_crossentropy",
@@ -29,5 +35,4 @@ if __name__ == '__main__':
         metrics=['accuracy'])
 
     print("Model fit: {}".format(model.fit(images_np, labels_np, steps_per_epoch=10)))
-
     print("Model test: {}".format(model.test_on_batch(images_np, labels_np)))
