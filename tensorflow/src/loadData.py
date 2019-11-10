@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 import pathlib
-from PIL import Image
 from keras.preprocessing.image import load_img, img_to_array
 
 STEPS = 10
@@ -33,8 +32,7 @@ def get_label(file_path):
     file = open("{}.txt".format(file_path), "r")
     label = file.read()
     file.close()
-    # return tf.constant(label, shape=(1, 1))
-    return float(label)
+    return float(label) / 10.0
 
 
 def decode_img(img, width, height):
@@ -52,20 +50,14 @@ def process_path(file_path):
 
     img = load_img(file_path + ".jpg", grayscale=True)
     img = img_to_array(img)
-    # img = tf.reshape(img, (1,) + img.shape)
 
     return img, label
 
 
 def next_batch(num, images, labels):
-    '''
-    Return a total of `num` random samples and labels.
-    '''
     idx = np.arange(0, len(images))
     np.random.shuffle(idx)
     idx = idx[:num]
-    # print(images[0].eval().shape)
-    # print(images[0].eval().reshape(1080 * 1920).shape)
     data_shuffle = [images[i].eval() for i in idx]
     labels_shuffle = [[labels[i]] for i in idx]
 

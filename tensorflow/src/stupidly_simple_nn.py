@@ -28,4 +28,6 @@ if __name__ == '__main__':
         optimizer="SGD",
         metrics=['accuracy'])
 
-    print(model.fit(images_np, labels_np, steps_per_epoch=10))
+    print("Model fit: {}".format(model.fit(images_np, labels_np, steps_per_epoch=10)))
+
+    print("Model test: {}".format(model.test_on_batch(images_np, labels_np)))
