@@ -1,111 +1,7 @@
 import tensorflow as tf
-import numpy as np
-import pathlib
 
-IMG_WIDTH = 192
-IMG_HEIGHT = 108
-STEPS = 10
-
-"""
-   _____      _                 _   _ _   _ 
-  / ____|    | |               | \ | | \ | |
- | (___   ___| |_ _   _ _ __   |  \| |  \| |
-  \___ \ / _ \ __| | | | '_ \  | . ` | . ` |
-  ____) |  __/ |_| |_| | |_) | | |\  | |\  |
- |_____/ \___|\__|\__,_| .__/  |_| \_|_| \_|
-                       | |                  
-                       |_|                  
-"""
-
-def weight_variable(shape):
-    initial = tf.truncated_normal(shape, stddev=0.1)
-    return tf.Variable(initial)
-
-
-def bias_variable(shape):
-    initial = tf.constant(0.1, shape=shape)
-    return tf.Variable(initial)
-
-
-def conv2d(x, W):
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
-
-
-def max_pool_2x2(x):
-    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
-
-
-def conv_layer(input, shape):
-    W = weight_variable(shape)
-    b = bias_variable([shape[3]])
-    return tf.nn.relu(conv2d(input, W) + b)
-
-
-def full_layer(input, size):
-    in_size = int(input.get_shape()[1])
-    W = weight_variable([in_size, size])
-    b = bias_variable([size])
-    return tf.matmul(input, W) + b
-
-"""
-  _                     _   _____        _        
- | |                   | | |  __ \      | |       
- | |     ___   __ _  __| | | |  | | __ _| |_ __ _ 
- | |    / _ \ / _` |/ _` | | |  | |/ _` | __/ _` |
- | |___| (_) | (_| | (_| | | |__| | (_| | || (_| |
- |______\___/ \__,_|\__,_| |_____/ \__,_|\__\__,_|
-                                                  
-"""
-
-def load_images():
-    data_dir = tf.keras.utils.get_file(
-        origin='file:///home/ida/Documents/5_Klasse/DA/LMLM/blender/data/renders/Suzanne.M_greyscale.tar.gz',
-        fname='grayscale_renders', untar=True)
-    data_dir = pathlib.Path(data_dir)
-
-    image_count = len(list(data_dir.glob('*.jpg')))
-    print("found {} images in path {}".format(image_count, data_dir))
-
-    return list(data_dir.glob('*.jpg'))
-
-
-def get_label(file_path):
-    file = open("{}.txt".format(file_path), "r")
-    label = file.read()
-    file.close()
-    return label
-
-
-def decode_img(img):
-    # convert the compressed string to a 3D uint8 tensor
-    img = tf.image.decode_jpeg(img, channels=1)
-    # Use `convert_image_dtype` to convert to floats in the [0,1] range.
-    img = tf.image.convert_image_dtype(img, tf.float32)
-    return img
-
-
-def process_path(file_path):
-    label = get_label(file_path)
-    # load the raw data from the file as a string
-    img = tf.io.read_file(file_path + ".jpg")
-    img = decode_img(img)
-    return img, label
-
-
-def next_batch(num, images, labels):
-    '''
-    Return a total of `num` random samples and labels.
-    '''
-    idx = np.arange(0, len(images))
-    np.random.shuffle(idx)
-    idx = idx[:num]
-    # print(images[0].eval().shape)
-    # print(images[0].eval().reshape(1080 * 1920).shape)
-    data_shuffle = [images[i].eval().reshape(IMG_HEIGHT * IMG_WIDTH) for i in idx]
-    labels_shuffle = [[labels[i]] for i in idx]
-
-    return np.asarray(data_shuffle), np.asarray(labels_shuffle)
-
+from loadData import *
+from setupNN import *
 
 if __name__ == '__main__':
     """
@@ -183,7 +79,7 @@ if __name__ == '__main__':
 
             sess.run(train_step, feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
 
-        X, Y = next_batch(10, images, labels)
-        test_accuracy = np.mean([sess.run(accuracy, feed_dict={x: X[i], y_: Y[i], keep_prob:1.0}) for i in range(10)])
+        #X, Y = next_batch(10, images, labels)
+        #test_accuracy = np.mean([sess.run(accuracy, feed_dict={x: X[i], y_: Y[i], keep_prob:1.0}) for i in range(10)])
 
     print("test accuracy: {}".format(test_accuracy))
