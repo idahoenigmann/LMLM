@@ -54,7 +54,7 @@ def _generate(option, directory):
                 cv2.imwrite('{}/{}'.format(newdir_path, filename), saturated, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
 
             elif option == options[2]:
-                scale_percent = 10  # percent of original size
+                scale_percent = 50  # percent of original size
                 width = int(image.shape[1] * scale_percent / 100)
                 height = int(image.shape[0] * scale_percent / 100)
                 dim = (width, height)
