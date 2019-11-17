@@ -16,8 +16,8 @@ from keras.preprocessing.image import load_img, img_to_array
 
 def load_images():
     data_dir = tf.keras.utils.get_file(
-        origin='file:///home/ida/Documents/5_Klasse/DA/LMLM/blender/data/renders/Suzanne.M_greyscale.tar.gz',
-        fname='grayscale_suzanne_m', untar=True)
+        origin='file:///home/ida/.keras/datasets/suzanne_m_10k.tar.gz',
+        fname='suzanne_m_10k', untar=True)
     data_dir = pathlib.Path(data_dir)
 
     image_count = len(list(data_dir.glob('*.jpg')))
