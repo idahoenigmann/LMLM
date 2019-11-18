@@ -21,10 +21,11 @@ if __name__ == '__main__':
         tf.keras.layers.Conv2D(32, 5, activation="tanh", input_shape=(images_np.shape[1], images_np.shape[2],
                                                                       images_np.shape[3]), name="conv2D_1"),
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
-        tf.keras.layers.Conv2D(64, 5, activation="tanh", name="conv2D_2"),
-        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
+        # tf.keras.layers.Conv2D(64, 5, activation="tanh", name="conv2D_2"),
+        # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
         tf.keras.layers.Flatten(name="flatten_1"),
         tf.keras.layers.Dense(1, name="dense_1")
+        # tf.keras.layers.AveragePooling2D(pool_size=(2, 2))
     ])
     model.summary()
 

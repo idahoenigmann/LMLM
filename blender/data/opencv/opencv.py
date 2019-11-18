@@ -21,7 +21,8 @@ parser.add_argument('-o', help='how to manipulate the images',
 args = parser.parse_args()
 if args.o not in options:
     print("Unknown option")
-    raise
+    exit(1)
+
 
 def _generate(option, directory):
     newdir_path = list(filter(None, directory.split('/')))
@@ -81,6 +82,7 @@ def _generate(option, directory):
                 print(options)
                 exit(1)
 
+
 def generate(args):
     if args.o == 'all':
         for option in options[0:-1]:
@@ -96,6 +98,5 @@ def generate(args):
         else:
             _generate(args.o, args.d)
 
+
 generate(args)
-
-
