@@ -13,16 +13,15 @@ from keras.preprocessing.image import load_img, img_to_array
 
 """
 
+origin = 'file:///home/ida/.keras/datasets/suzanne_m_10k.tar.gz'
+fname = 'suzanne_m_10k'
+
 
 def load_images():
     data_dir = tf.keras.utils.get_file(
-        origin='file:///home/ida/.keras/datasets/suzanne_m_10k.tar.gz',
-        fname='suzanne_m_50', untar=True)
+        origin=origin,
+        fname=fname, untar=True)
     data_dir = pathlib.Path(data_dir)
-
-    image_count = len(list(data_dir.glob('*.jpg')))
-    print("found {} images in path {}".format(image_count, data_dir))
-
     return list(data_dir.glob('*.jpg'))
 
 
@@ -40,3 +39,20 @@ def process_path(file_path):
     img = img_to_array(img)
 
     return img, label
+
+
+def get_image_dimensions(file_path):
+    img = load_img(file_path + ".jpg", grayscale=True)
+    img = img_to_array(img)
+
+    return img.shape
+
+
+def get_image_count():
+    data_dir = tf.keras.utils.get_file(
+        origin=origin,
+        fname=fname, untar=True)
+    data_dir = pathlib.Path(data_dir)
+
+    image_count = len(list(data_dir.glob('*.jpg')))
+    return image_count
