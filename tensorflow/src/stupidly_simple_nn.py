@@ -26,7 +26,7 @@ if __name__ == '__main__':
     print("total image count: {}".format(loadData.get_image_count()))
 
     percentage = int(loadData.get_image_count() / 200)
-    i = 0
+    i = int(1000 / percentage)        # start image count
     while True:
         i = (i + 1) % percentage
     # for i in range(0, percentage):
