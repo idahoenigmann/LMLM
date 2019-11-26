@@ -19,14 +19,16 @@ if __name__ == '__main__':
     ])
     model.summary()
 
+    tf.keras.utils.plot_model(model, to_file='model.png')
+
     model.compile(loss=tf.keras.losses.mean_absolute_error,
-                  optimizer="SGD",
+                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.003),
                   metrics=[tf.keras.metrics.mean_absolute_percentage_error])
 
     print("total image count: {}".format(loadData.get_image_count()))
 
     percentage = int(loadData.get_image_count() / 200)
-    i = int(1000 / percentage)        # start image count
+    i = int(0 / percentage)        # start image count
     while True:
         i = (i + 1) % percentage
     # for i in range(0, percentage):
