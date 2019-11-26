@@ -22,7 +22,7 @@ if __name__ == '__main__':
     tf.keras.utils.plot_model(model, to_file='model.png')
 
     model.compile(loss=tf.keras.losses.mean_absolute_error,
-                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.003),
+                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.01),
                   metrics=[tf.keras.metrics.mean_absolute_percentage_error])
 
     print("total image count: {}".format(loadData.get_image_count()))
