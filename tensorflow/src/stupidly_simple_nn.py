@@ -19,7 +19,7 @@ if __name__ == '__main__':
     ])
     model.summary()
 
-    tf.keras.utils.plot_model(model, to_file='model.png')
+    # tf.keras.utils.plot_model(model, to_file='model.png')
 
     model.compile(loss=tf.keras.losses.mean_absolute_error,
                   optimizer=tf.keras.optimizers.SGD(learning_rate=0.01),
