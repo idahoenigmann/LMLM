@@ -11,20 +11,32 @@ import loadData
 def plot_conv_weights(model, layer):
     W = model.get_layer(name=layer).get_weights()[0]
 
-    if len(W.shape) == 2:
+    """if len(W.shape) == 2:
         W = W.reshape((4 * 18, 64))
         plt.imshow(W)
 
         plt.axis('off')
         plt.tick_params(axis='both', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
+"""
+    if len(W.shape) == 2:
+        W = W.reshape((4, 18, 64))
 
-    if len(W.shape) == 4:
-        W = W.reshape((W.shape[0], W.shape[1], W.shape[2]*W.shape[3]))
-        fig, axs = plt.subplots(5, 5, figsize=(8, 8))
+        fig, axs = plt.subplots(4, 8, figsize=(18, 2))
         fig.subplots_adjust(hspace=0.1, wspace=0.1)
 
         axs = axs.ravel()
-        for i in range(25):
+        for i in range(32):
+            axs[i].imshow(W[:, :, i])
+            axs[i].set_xticks([])
+            axs[i].set_yticks([])
+
+    if len(W.shape) == 4:
+        W = W.reshape((W.shape[0], W.shape[1], W.shape[2]*W.shape[3]))
+        fig, axs = plt.subplots(4, 8, figsize=(16, 8))
+        fig.subplots_adjust(hspace=0.1, wspace=0.1)
+
+        axs = axs.ravel()
+        for i in range(32):
             axs[i].imshow(W[:, :, i])
             axs[i].set_xticks([])
             axs[i].set_yticks([])
@@ -50,7 +62,10 @@ if __name__ == '__main__':
 
     model.summary()
 
-    model.load_weights('pretained_weights_suzanne_greyscale_m.h5')
+    # model.load_weights('pretrained_weights_suzanne_greyscale_m.h5')
+    model.load_weights('pretrained_weights_suzanne_greyscale_m_momentum.h5')
+    # model.load_weights('pretrained_weights_suzanne_greyscale_m_momentum2.h5')
+    # model.load_weights('weights.h5')
 
     plot_conv_weights(model, "conv2D_1")
     plot_conv_weights(model, "conv2D_2")
