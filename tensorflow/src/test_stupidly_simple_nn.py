@@ -30,7 +30,7 @@ if __name__ == '__main__':
     images = []
     labels = []
 
-    for file in loadData.load_images()[0:10]:
+    for file in loadData.load_images()[9000:9010]:
         img, label = loadData.process_path(str(file)[0:(str(file).rfind("."))])
         images.append(img)
         labels.append(label)
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     images_np = np.asarray(images)
     labels_np = np.asarray(labels)
 
-    model.load_weights('weights/weights.h5')
+    model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
 
     labels_estimated_np = model.predict(images_np).flatten()
 
@@ -46,4 +46,4 @@ if __name__ == '__main__':
 
     for i in range(len(labels_np)):
         print("{:15.7} {:15.7} {:15.7}".format(labels_np[i], labels_estimated_np[i],
-                                                  labels_np[i] - labels_estimated_np[i]))
+                                               labels_np[i] - labels_estimated_np[i]))

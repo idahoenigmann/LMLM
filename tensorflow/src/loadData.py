@@ -14,7 +14,7 @@ from keras.preprocessing.image import load_img, img_to_array
 """
 
 origin = 'file:///home/ida/.keras/datasets/suzanne_m_10k.tar.gz'
-fname = 'suzanne_s_50'
+fname = 'suzanne_m_10k'
 
 
 def load_images():
