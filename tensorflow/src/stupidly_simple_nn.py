@@ -46,11 +46,11 @@ if __name__ == '__main__':
 
         labels_np = tf.reshape(labels_np, [images_np.shape[0], 1])
 
-        if os.path.isfile('weights.h5'):
-            model.load_weights('weights.h5')
+        if os.path.isfile('weights/weights.h5'):
+            model.load_weights('weights/weights.h5')
 
         print("Model fit: {}".format(model.fit(images_np, labels_np, batch_size=10, epochs=1,
                                                verbose=1, steps_per_epoch=10)))
 
-        model.save_weights('weights.h5')
+        model.save_weights('weights/weights.h5')
     # print("Model test: {}".format(model.test_on_batch(images_np[0:15], labels_np[0:15])))

@@ -62,10 +62,10 @@ if __name__ == '__main__':
 
     model.summary()
 
-    # model.load_weights('pretrained_weights_suzanne_greyscale_m.h5')
-    model.load_weights('pretrained_weights_suzanne_greyscale_m_momentum.h5')
-    # model.load_weights('pretrained_weights_suzanne_greyscale_m_momentum2.h5')
-    # model.load_weights('weights.h5')
+    # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
+    model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum.h5')
+    # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum2.h5')
+    # model.load_weights('weights/weights.h5')
 
     plot_conv_weights(model, "conv2D_1")
     plot_conv_weights(model, "conv2D_2")
