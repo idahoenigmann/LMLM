@@ -27,11 +27,12 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    percentage = int(loadData.get_image_count() / 2)
-    #i = int(0 / percentage)        # start image count
-    #while True:
-    #    i = (i + 1) % percentage
-    for i in range(0, percentage):
+    cnt_batch = 2
+    percentage = int(loadData.get_image_count() / cnt_batch)
+    i = 0 // percentage        # start image count
+    while True:
+        i = (i + 1) % cnt_batch
+    # for i in range(0, cnt_batch):
         images = []
         labels = []
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
         if os.path.isfile('weights/weights.h5'):
             model.load_weights('weights/weights.h5')
 
-        print("Model fit: {}".format(model.fit(images_np, labels_np, batch_size=10, epochs=1,
+        print("Model fit: {}".format(model.fit(images_np, labels_np, batch_size=10, epochs=2,
                                                verbose=1, steps_per_epoch=10)))
 
         model.save_weights('weights/weights.h5')
