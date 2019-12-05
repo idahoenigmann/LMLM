@@ -27,30 +27,23 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    percentage = int(loadData.get_image_count() / 2)
-    #i = int(0 / percentage)        # start image count
-    #while True:
-    #    i = (i + 1) % percentage
-    for i in range(0, percentage):
-        images = []
-        labels = []
+    images = []
+    labels = []
 
-        print("from {} to {}".format(i * percentage, (i + 1) * percentage))
-        for file in loadData.load_images()[i * percentage:(i + 1) * percentage]:
-            img, label = loadData.process_path(str(file)[0:(str(file).rfind("."))])
-            images.append(img)
-            labels.append(label)
+    for file in loadData.load_images()[0:10]:
+        img, label = loadData.process_path(str(file)[0:(str(file).rfind("."))])
+        images.append(img)
+        labels.append(label)
 
-        images_np = np.asarray(images)
-        labels_np = np.asarray(labels)
+    images_np = np.asarray(images)
+    labels_np = np.asarray(labels)
 
-        labels_np = tf.reshape(labels_np, [images_np.shape[0], 1])
+    model.load_weights('weights/weights.h5')
 
-        if os.path.isfile('weights/weights.h5'):
-            model.load_weights('weights/weights.h5')
+    labels_estimated_np = model.predict(images_np).flatten()
 
-        print("Model fit: {}".format(model.fit(images_np, labels_np, batch_size=10, epochs=1,
-                                               verbose=1, steps_per_epoch=10)))
+    print("{:15} {:15} {:15}".format("real", "estimated", "diff"))
 
-        model.save_weights('weights/weights.h5')
-    # print("Model test: {}".format(model.test_on_batch(images_np[0:15], labels_np[0:15])))
+    for i in range(len(labels_np)):
+        print("{:15.7} {:15.7} {:15.7}".format(labels_np[i], labels_estimated_np[i],
+                                                  labels_np[i] - labels_estimated_np[i]))
