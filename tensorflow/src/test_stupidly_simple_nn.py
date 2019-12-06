@@ -19,10 +19,8 @@ if __name__ == '__main__':
     ])
     model.summary()
 
-    # tf.keras.utils.plot_model(model, to_file='model.png')
-
     model.compile(loss=tf.keras.losses.mean_absolute_error,
-                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.99),
+                  optimizer=tf.keras.optimizers.SGD(),
                   metrics=[tf.keras.metrics.mean_absolute_percentage_error])
 
     print("total image count: {}".format(loadData.get_image_count()))
@@ -30,7 +28,7 @@ if __name__ == '__main__':
     images = []
     labels = []
 
-    for file in loadData.load_images()[9000:9010]:
+    for file in loadData.load_images()[0:20]:
         img, label = loadData.process_path(str(file)[0:(str(file).rfind("."))])
         images.append(img)
         labels.append(label)
@@ -38,12 +36,25 @@ if __name__ == '__main__':
     images_np = np.asarray(images)
     labels_np = np.asarray(labels)
 
-    model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
+    model.load_weights('weights/weights.h5')
 
     labels_estimated_np = model.predict(images_np).flatten()
 
-    print("{:15} {:15} {:15}".format("real", "estimated", "diff"))
+    absolute_average = 0
+    absolute_percentage_average = 0
+
+    print("{:15}  {:15}  {:15}  {:15}".format("real", "estimated", "diff", "percentage"))
 
     for i in range(len(labels_np)):
-        print("{:15.7} {:15.7} {:15.7}".format(labels_np[i], labels_estimated_np[i],
-                                               labels_np[i] - labels_estimated_np[i]))
+        absolute_average += abs(labels_np[i] - labels_estimated_np[i])
+        absolute_percentage_average += abs(100 - (labels_estimated_np[i]/labels_np[i]*100))
+
+        print("{:15.7}m {:15.7}m {:15.7}m {:15.7}%".format(labels_np[i], labels_estimated_np[i],
+                                                     labels_np[i] - labels_estimated_np[i],
+                                                     labels_estimated_np[i]/labels_np[i]*100))
+
+    absolute_average = absolute_average / len(labels_np)
+    absolute_percentage_average = absolute_percentage_average / len(labels_np)
+
+    print("\nabsolute average: {:.7}m".format(absolute_average))
+    print("absolute percentage average: {:.7}%".format(absolute_percentage_average))

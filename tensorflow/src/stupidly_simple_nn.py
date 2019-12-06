@@ -4,7 +4,6 @@ import loadData
 import os.path
 
 if __name__ == '__main__':
-
     file = loadData.load_images()[0]
     image_shape = loadData.get_image_dimensions(str(file)[0:(str(file).rfind("."))])
 
@@ -22,12 +21,12 @@ if __name__ == '__main__':
     # tf.keras.utils.plot_model(model, to_file='model.png')
 
     model.compile(loss=tf.keras.losses.mean_absolute_error,
-                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.99),
+                  optimizer=tf.keras.optimizers.SGD(),
                   metrics=[tf.keras.metrics.mean_absolute_percentage_error])
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    cnt_batch = 2
+    cnt_batch = 400
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0 // percentage        # start image count
     while True:
@@ -54,4 +53,3 @@ if __name__ == '__main__':
                                                verbose=1, steps_per_epoch=10)))
 
         model.save_weights('weights/weights.h5')
-    # print("Model test: {}".format(model.test_on_batch(images_np[0:15], labels_np[0:15])))
