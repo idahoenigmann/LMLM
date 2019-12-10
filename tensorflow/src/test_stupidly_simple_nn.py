@@ -10,10 +10,13 @@ if __name__ == '__main__':
 
     model = tf.keras.Sequential([
         tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0], image_shape[1],
-                                                                      image_shape[2]), name="conv2D_1"),
+                                                                                         image_shape[2]),
+                               name="conv2D_1"),
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
         tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
+        tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
+        # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
         tf.keras.layers.Flatten(name="flatten_1"),
         tf.keras.layers.Dense(1, name="dense_1")
     ])
