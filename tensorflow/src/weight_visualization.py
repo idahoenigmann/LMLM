@@ -1,47 +1,53 @@
 import tensorflow as tf
-import random
 import matplotlib.pyplot as plt
-import matplotlib
-import numpy as np
-import math
-from collections import defaultdict
 import loadData
+import primefactors
+import math
 
 
-def plot_conv_weights(model, layer):
+def plot_conv_weights(model, layer, shape):
     W = model.get_layer(name=layer).get_weights()[0]
+    print("shape of layer {}: {} will be reshaped to {}".format(layer, W.shape, shape))
+    W = W.reshape(shape)
 
-    """if len(W.shape) == 2:
-        W = W.reshape((4 * 18, 64))
+    if len(shape) == 3:
+        a, b = 1, 1
+        even = True
+        for e in primefactors.factorize(shape[-1]):
+            if even:
+                a *= e
+            else:
+                b *= e
+            even = not even
+
+        gcd = math.gcd(b * shape[1], a * shape[0])
+
+        konst_mul = 1
+
+        if ((a * shape[0] / gcd) <= 2) or ((b * shape[1] / gcd) <= 2):     # avoid images smaller than 2
+            konst_mul = 20
+
+        print("figsize({}, {})".format(b * shape[1] / gcd * konst_mul, a * shape[0] / gcd * konst_mul))
+
+        fig, axs = plt.subplots(a, b, figsize=(b * shape[1] / gcd * konst_mul,
+                                               a * shape[0] / gcd * konst_mul))
+        fig.subplots_adjust(hspace=0.2, wspace=0.1)
+
+        axs = axs.ravel()
+
+        for i in range(shape[-1]):
+            axs[i].imshow(W[:, :, i])
+            axs[i].set_xticks([])
+            axs[i].set_yticks([])
+
+    elif len(shape) == 2:
         plt.imshow(W)
-
         plt.axis('off')
         plt.tick_params(axis='both', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
-"""
-    if len(W.shape) == 2:
-        W = W.reshape((4, 18, 64))
 
-        fig, axs = plt.subplots(4, 8, figsize=(18, 2))
-        fig.subplots_adjust(hspace=0.1, wspace=0.1)
+    plt.tight_layout(0, 0.1, 0.1)
 
-        axs = axs.ravel()
-        for i in range(32):
-            axs[i].imshow(W[:, :, i])
-            axs[i].set_xticks([])
-            axs[i].set_yticks([])
-
-    if len(W.shape) == 4:
-        W = W.reshape((W.shape[0], W.shape[1], W.shape[2]*W.shape[3]))
-        fig, axs = plt.subplots(4, 8, figsize=(16, 8))
-        fig.subplots_adjust(hspace=0.1, wspace=0.1)
-
-        axs = axs.ravel()
-        for i in range(32):
-            axs[i].imshow(W[:, :, i])
-            axs[i].set_xticks([])
-            axs[i].set_yticks([])
-
-    plt.savefig('implementation_neuralNetwork_structureOfOurNeuralNetwork_' + layer + '.png')
+    plt.savefig('implementation_neuralNetwork_structureOfOurNeuralNetwork_' + layer + '.pdf', bbox_inches='tight')
     plt.show()
 
 
@@ -62,14 +68,15 @@ if __name__ == '__main__':
 
     model.summary()
 
-    # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
+    model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
     # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum.h5')
     # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum2.h5')
-    model.load_weights('weights/weights.h5')
+    # model.load_weights('weights/weights.h5')
 
-    plot_conv_weights(model, "conv2D_1")
-    plot_conv_weights(model, "conv2D_2")
-    plot_conv_weights(model, "dense_1")
+    # plot_conv_weights(model, "conv2D_1", (5, 5, 32))
+    plot_conv_weights(model, "conv2D_2", (5, 5, 32 * 64))
+    # plot_conv_weights(model, "dense_1", (4, 18, 64))
+    # plot_conv_weights(model, "dense_1", (4 * 18, 64))
 
     """
     # yellow = high number
