@@ -5,7 +5,7 @@ import primefactors
 import math
 
 
-def plot_conv_weights(model, layer, shape):
+def plot_conv_weights(model, layer, shape, landscape=False):
     W = model.get_layer(name=layer).get_weights()[0]
     print("shape of layer {}: {} will be reshaped to {}".format(layer, W.shape, shape))
     W = W.reshape(shape)
@@ -19,6 +19,9 @@ def plot_conv_weights(model, layer, shape):
             else:
                 b *= e
             even = not even
+
+        if landscape:
+            a, b = b, a
 
         gcd = math.gcd(b * shape[1], a * shape[0])
 
@@ -47,7 +50,7 @@ def plot_conv_weights(model, layer, shape):
 
     plt.tight_layout(0, 0.1, 0.1)
 
-    plt.savefig('implementation_neuralNetwork_structureOfOurNeuralNetwork_' + layer + '.pdf', bbox_inches='tight')
+    plt.savefig('implementation_neuralNetwork_structureOfOurNeuralNetwork_' + layer + '.svg', bbox_inches='tight')
     plt.show()
 
 
@@ -62,7 +65,7 @@ if __name__ == '__main__':
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
         tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
-        tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
+        # tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
         # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
         tf.keras.layers.Flatten(name="flatten_1"),
         tf.keras.layers.Dense(1, name="dense_1")
@@ -70,13 +73,13 @@ if __name__ == '__main__':
 
     model.summary()
 
-    # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
+    model.load_weights('weights/pretrained_weights_suzanne_greyscale_m.h5')
     # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum.h5')
     # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum2.h5')
-    model.load_weights('weights/weights.h5')
+    # model.load_weights('weights/weights.h5')
 
     # plot_conv_weights(model, "conv2D_1", (5, 5, 32))
-    plot_conv_weights(model, "conv2D_2", (5, 5, 32 * 64))
+    plot_conv_weights(model, "conv2D_2", (5, 5, 32 * 64), True)
     # plot_conv_weights(model, "dense_1", (4, 18, 64))
     # plot_conv_weights(model, "dense_1", (4 * 18, 64))
 
