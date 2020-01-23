@@ -13,8 +13,8 @@ from keras.preprocessing.image import load_img, img_to_array
 
 """
 
-origin = 'file:///home/ida/.keras/datasets/suzanne_m_10k.tar.gz'
-fname = 'suzanne_m_10k'
+origin = 'file:///home/ida/.keras/datasets/suzanne_l_1k.tar.gz'
+fname = 'suzanne_l_1k'
 
 
 def load_images():
@@ -26,10 +26,12 @@ def load_images():
 
 
 def get_label(file_path):
-    file = open("{}.txt".format(file_path), "r")
-    label = file.read()
+    file = open("{}-2.txt".format(file_path), "r")
+    x = float(file.readline()) / 10.0
+    y = float(file.readline()) / 10.0
+    z = float(file.readline()) / 10.0
     file.close()
-    return float(label) / 10.0
+    return [x, y, z]
 
 
 def process_path(file_path):

@@ -16,7 +16,7 @@ if __name__ == '__main__':
         tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
         # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
         tf.keras.layers.Flatten(name="flatten_1"),
-        tf.keras.layers.Dense(1, name="dense_1")
+        tf.keras.layers.Dense(3, name="dense_1")
     ])
     model.summary()
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         images_np = np.asarray(images)
         labels_np = np.asarray(labels)
 
-        labels_np = tf.reshape(labels_np, [images_np.shape[0], 1])
+        labels_np = tf.reshape(labels_np, [images_np.shape[0], 3])
 
         if os.path.isfile('weights/weights.h5'):
             model.load_weights('weights/weights.h5')
