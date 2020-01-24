@@ -22,7 +22,24 @@ def load_images():
         origin=origin,
         fname=fname, untar=True)
     data_dir = pathlib.Path(data_dir)
-    return list(data_dir.glob('*.jpg'))
+
+    res1 = list(data_dir.glob('?.jpg'))
+    res1.sort()
+    res2 = list(data_dir.glob('??.jpg'))
+    res2.sort()
+    res3 = list(data_dir.glob('???.jpg'))
+    res3.sort()
+
+    res = list()
+
+    for e in res1:
+        res.append(e)
+    for e in res2:
+        res.append(e)
+    for e in res3:
+        res.append(e)
+
+    return res
 
 
 def get_label(file_path):

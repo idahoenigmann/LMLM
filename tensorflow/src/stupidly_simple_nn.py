@@ -28,15 +28,14 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    cnt_batch = 400
+    cnt_batch = 15
     percentage = int(loadData.get_image_count() / cnt_batch)
-    i = 0 // percentage        # start image count
+    i = 0   # // percentage        # start image count
     while True:
-        i = (i + 1) % cnt_batch
-    # for i in range(0, cnt_batch):
         images = []
         labels = []
 
+        print("-" * 100)
         print("from {} to {}".format(i * percentage, (i + 1) * percentage))
         for file in loadData.load_images()[i * percentage:(i + 1) * percentage]:
             img, label = loadData.process_path(str(file)[0:(str(file).rfind("."))])
@@ -48,10 +47,13 @@ if __name__ == '__main__':
 
         labels_np = tf.reshape(labels_np, [images_np.shape[0], 3])
 
+        print(labels_np[0])
+
         if os.path.isfile('weights/weights.h5'):
             model.load_weights('weights/weights.h5')
 
-        print("Model fit: {}".format(model.fit(images_np, labels_np, batch_size=10, epochs=2,
-                                               verbose=1, steps_per_epoch=10)))
+        model.fit(images_np, labels_np, epochs=3, verbose=2)
 
         model.save_weights('weights/weights.h5')
+
+        i = (i + 1) % cnt_batch
