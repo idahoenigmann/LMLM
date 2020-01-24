@@ -16,7 +16,8 @@ if __name__ == '__main__':
         tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
         # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
         tf.keras.layers.Flatten(name="flatten_1"),
-        tf.keras.layers.Dense(3, name="dense_1")
+        # tf.keras.layers.Dense(128, name="dense_1"),
+        tf.keras.layers.Dense(3, name="dense_2")
     ])
     model.summary()
 
@@ -24,7 +25,7 @@ if __name__ == '__main__':
 
     model.compile(loss=tf.keras.losses.mean_absolute_error,
                   optimizer=tf.keras.optimizers.SGD(),
-                  metrics=[tf.keras.metrics.mean_absolute_percentage_error])
+                  metrics=[tf.keras.metrics.mean_absolute_error])
 
     print("total image count: {}".format(loadData.get_image_count()))
 
@@ -47,13 +48,18 @@ if __name__ == '__main__':
 
         labels_np = tf.reshape(labels_np, [images_np.shape[0], 3])
 
-        print(labels_np[0])
-
         if os.path.isfile('weights/weights.h5'):
             model.load_weights('weights/weights.h5')
 
         model.fit(images_np, labels_np, epochs=3, verbose=2)
 
         model.save_weights('weights/weights.h5')
+
+        shape = list(images_np[-1].shape)
+        shape.insert(0, 1)
+
+        img = images_np[-1].reshape(shape)
+
+        print("expected: {}; actual: {}".format(labels_np[-1], model.predict(img)))
 
         i = (i + 1) % cnt_batch
