@@ -55,11 +55,12 @@ if __name__ == '__main__':
 
         model.save_weights('weights/weights.h5')
 
-        shape = list(images_np[-1].shape)
-        shape.insert(0, 1)
+        for idx in range(len(images_np)):
+            shape = list(images_np[idx].shape)
+            shape.insert(0, 1)
 
-        img = images_np[-1].reshape(shape)
+            img = images_np[-1].reshape(shape)
 
-        print("expected: {}; actual: {}".format(labels_np[-1], model.predict(img)))
+            print("expected: {}; actual: {}".format(labels_np[idx], model.predict(img)))
 
         i = (i + 1) % cnt_batch
