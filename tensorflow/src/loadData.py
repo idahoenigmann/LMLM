@@ -56,7 +56,8 @@ def process_path(file_path):
 
     img = load_img(file_path + ".jpg", color_mode="rgb")
     img = np.array(img)
-    # img = img_to_array(img)
+
+    img = img / 255.0
 
     return img, label
 

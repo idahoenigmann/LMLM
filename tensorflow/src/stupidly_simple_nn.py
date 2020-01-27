@@ -46,7 +46,7 @@ if __name__ == '__main__':
             images.append(img)
             labels.append(label)
 
-        images_np = np.asarray(images, dtype=np.int)
+        images_np = np.asarray(images, dtype=np.float)
         labels_np = np.asarray(labels)
 
         labels_np = tf.reshape(labels_np, [images_np.shape[0], 3])
@@ -61,9 +61,9 @@ if __name__ == '__main__':
 
         model.save_weights('weights/weights.h5')
 
-        """idx = 0
-        for actual in model.predict(images_np):
+        idx = 0
+        for actual in model.predict_on_batch(images_np):
             print("expected: {}; actual: {}".format(labels_np[idx], actual))
-            idx += 1"""
+            idx += 1
 
         i = (i + 1) % cnt_batch

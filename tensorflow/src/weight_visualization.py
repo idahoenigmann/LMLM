@@ -39,7 +39,7 @@ def plot_conv_weights(model, layer, shape, landscape=False):
         axs = axs.ravel()
 
         for i in range(shape[-1]):
-            axs[i].imshow(W[:, :, i], vmin=0, vmax=1)
+            axs[i].imshow(W[:, :, i]) #, vmin=0, vmax=1)
             axs[i].set_xticks([])
             axs[i].set_yticks([])
 
@@ -68,7 +68,8 @@ if __name__ == '__main__':
         tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
         # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
         tf.keras.layers.Flatten(name="flatten_1"),
-        tf.keras.layers.Dense(3, name="dense_1")
+        # tf.keras.layers.Dense(128, name="dense_1"),
+        tf.keras.layers.Dense(3, name="dense_2")
     ])
 
     model.summary()
@@ -78,9 +79,10 @@ if __name__ == '__main__':
     # model.load_weights('weights/pretrained_weights_suzanne_greyscale_m_momentum2.h5')
     model.load_weights('weights/weights.h5')
 
-    # plot_conv_weights(model, "conv2D_1", (5, 5, 32))
-    plot_conv_weights(model, "conv2D_2", (5, 5, 32 * 64), True)
-    # plot_conv_weights(model, "dense_1", (4, 18, 64))
+    # plot_conv_weights(model, "conv2D_1", (5, 5, 3 * 32))
+    # plot_conv_weights(model, "conv2D_2", (5, 5, 32 * 64), True)
+    # plot_conv_weights(model, "conv2D_3", (4, 4, 64 * 32))
+    plot_conv_weights(model, "dense_2", (17, 128, 3))
     # plot_conv_weights(model, "dense_1", (4 * 18, 64))
 
     """
