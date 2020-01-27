@@ -13,8 +13,8 @@ from keras.preprocessing.image import load_img, img_to_array
 
 """
 
-origin = 'file:///home/ida/.keras/datasets/suzanne_l_1k.tar.gz'
-fname = 'suzanne_l_1k'
+origin = 'file:///home/ida/.keras/datasets/suzanne_all_1k.zip'
+fname = 'suzanne_all_1k'
 
 
 def load_images():
@@ -23,7 +23,7 @@ def load_images():
         fname=fname, untar=True)
     data_dir = pathlib.Path(data_dir)
 
-    res1 = list(data_dir.glob('?.jpg'))
+    """res1 = list(data_dir.glob('?.jpg'))
     res1.sort()
     res2 = list(data_dir.glob('??.jpg'))
     res2.sort()
@@ -37,9 +37,9 @@ def load_images():
     for e in res2:
         res.append(e)
     for e in res3:
-        res.append(e)
+        res.append(e)"""
 
-    return res
+    return list(data_dir.glob('*.jpg'))
 
 
 def get_label(file_path):

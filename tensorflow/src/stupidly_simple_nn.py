@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    cnt_batch = 250
+    cnt_batch = 2500 / 4
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
 
@@ -40,8 +40,8 @@ if __name__ == '__main__':
         labels = []
 
         print("-" * 100)
-        print("from {} to {}".format(i * percentage, (i + 1) * percentage))
-        for file in loadData.load_images()[i * percentage:(i + 1) * percentage]:
+        print("from {} to {}".format(int(i * percentage), int((i + 1) * percentage)))
+        for file in loadData.load_images()[int(i * percentage):int((i + 1) * percentage)]:
             img, label = loadData.process_path(str(file)[0:(str(file).rfind("."))])
             images.append(img)
             labels.append(label)
