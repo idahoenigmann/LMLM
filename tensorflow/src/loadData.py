@@ -54,14 +54,15 @@ def get_label(file_path):
 def process_path(file_path):
     label = get_label(file_path)
 
-    img = load_img(file_path + ".jpg", color_mode="grayscale")
-    img = img_to_array(img)
+    img = load_img(file_path + ".jpg", color_mode="rgb")
+    img = np.array(img)
+    # img = img_to_array(img)
 
     return img, label
 
 
 def get_image_dimensions(file_path):
-    img = load_img(file_path + ".jpg", color_mode="grayscale")
+    img = load_img(file_path + ".jpg", color_mode="rgb")
     img = img_to_array(img)
 
     return img.shape

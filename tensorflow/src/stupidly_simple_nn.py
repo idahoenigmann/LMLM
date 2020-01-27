@@ -2,6 +2,8 @@ import tensorflow as tf
 import numpy as np
 import loadData
 import os.path
+import PIL
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     file = loadData.load_images()[0]
@@ -25,13 +27,14 @@ if __name__ == '__main__':
 
     model.compile(loss=tf.keras.losses.mean_absolute_error,
                   optimizer=tf.keras.optimizers.SGD(),
-                  metrics=[tf.keras.metrics.mean_absolute_error])
+                  metrics=[tf.keras.metrics.mean_absolute_percentage_error])
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    cnt_batch = 15
+    cnt_batch = 250
     percentage = int(loadData.get_image_count() / cnt_batch)
-    i = 0   # // percentage        # start image count
+    i = 0
+
     while True:
         images = []
         labels = []
@@ -43,7 +46,7 @@ if __name__ == '__main__':
             images.append(img)
             labels.append(label)
 
-        images_np = np.asarray(images)
+        images_np = np.asarray(images, dtype=np.int)
         labels_np = np.asarray(labels)
 
         labels_np = tf.reshape(labels_np, [images_np.shape[0], 3])
@@ -51,16 +54,16 @@ if __name__ == '__main__':
         if os.path.isfile('weights/weights.h5'):
             model.load_weights('weights/weights.h5')
 
+        # imgplt = plt.imshow(images_np[0])
+        # plt.show()
+
         model.fit(images_np, labels_np, epochs=3, verbose=2)
 
         model.save_weights('weights/weights.h5')
 
-        for idx in range(len(images_np)):
-            shape = list(images_np[idx].shape)
-            shape.insert(0, 1)
-
-            img = images_np[-1].reshape(shape)
-
-            print("expected: {}; actual: {}".format(labels_np[idx], model.predict(img)))
+        """idx = 0
+        for actual in model.predict(images_np):
+            print("expected: {}; actual: {}".format(labels_np[idx], actual))
+            idx += 1"""
 
         i = (i + 1) % cnt_batch
