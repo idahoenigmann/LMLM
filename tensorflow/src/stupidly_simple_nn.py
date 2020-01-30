@@ -57,7 +57,7 @@ if __name__ == '__main__':
         # imgplt = plt.imshow(images_np[0])
         # plt.show()
 
-        model.fit(images_np, labels_np, epochs=3, verbose=2, steps_per_epoch=10)
+        model.fit(images_np, labels_np, epochs=3, verbose=2, steps_per_epoch=None)
 
         model.save_weights('weights/weights.h5')
 
