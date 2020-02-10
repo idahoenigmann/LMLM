@@ -9,25 +9,24 @@ if __name__ == '__main__':
     file = loadData.load_images()[0]
     image_shape = loadData.get_image_dimensions(str(file)[0:(str(file).rfind("."))])
 
-    model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0], image_shape[1],
-                                                                      image_shape[2]), name="conv2D_1"),
-        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
-        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
-        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
-        tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
-        # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
-        tf.keras.layers.Flatten(name="flatten_1"),
-        # tf.keras.layers.Dense(128, name="dense_1"),
-        tf.keras.layers.Dense(3, name="dense_2")
-    ])
+    input = tf.keras.Input(shape=(image_shape[0], image_shape[1], image_shape[2]))
+    hidden_conv_0 = tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, name="conv2D_1")(input)
+    hidden_pool_1 = tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1")(hidden_conv_0)
+    hidden_conv_2 = tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2")(hidden_pool_1)
+    hidden_pool_3 = tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2")(hidden_conv_2)
+    hidden_conv_4 = tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3")(hidden_pool_3)
+    hidden_flat_5 = tf.keras.layers.Flatten(name="flatten_1")(hidden_conv_4)
+    output = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)(hidden_flat_5)
+
+    sgd = tf.keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    model = tf.keras.Model(inputs=input, outputs=[output, output, output])
+
     model.summary()
 
     # tf.keras.utils.plot_model(model, to_file='model.png')
 
-    model.compile(loss=tf.keras.losses.mean_absolute_error,
-                  optimizer=tf.keras.optimizers.SGD(),
-                  metrics=[tf.keras.metrics.mean_absolute_percentage_error])
+    model.compile(loss=tf.keras.losses.mean_absolute_error, loss_weights=[1.0, 0.6, 0.6],
+                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.02, momentum=0.9))
 
     print("total image count: {}".format(loadData.get_image_count()))
 
@@ -49,7 +48,14 @@ if __name__ == '__main__':
         images_np = np.asarray(images, dtype=np.float)
         labels_np = np.asarray(labels)
 
-        labels_np = tf.reshape(labels_np, [images_np.shape[0], 3])
+        labels_np = tf.reshape(labels_np, [12, None])
+        tf.unravel_index # ?
+
+        print(labels_np.shape)
+
+        labels_x = labels_np[0::3]
+        labels_y = labels_np[1::3]
+        labels_z = labels_np[2::3]
 
         if os.path.isfile('weights/weights.h5'):
             model.load_weights('weights/weights.h5')
@@ -57,13 +63,13 @@ if __name__ == '__main__':
         # imgplt = plt.imshow(images_np[0])
         # plt.show()
 
-        model.fit(images_np, labels_np, epochs=3, verbose=2, steps_per_epoch=None)
+        model.fit(images_np, [labels_x, labels_y, labels_z], epochs=3, verbose=2, steps_per_epoch=None)
 
         model.save_weights('weights/weights.h5')
 
         idx = 0
         for actual in model.predict_on_batch(images_np):
-            print("expected: {}; actual: {}".format(labels_np[idx], actual))
+            print("difference: {}".format(np.abs(np.array(labels_np[idx]) - np.array(actual))))
             idx += 1
 
         i = (i + 1) % cnt_batch
