@@ -25,12 +25,13 @@ if __name__ == '__main__':
 
     # tf.keras.utils.plot_model(model, to_file='model.png')
 
-    model.compile(loss=tf.keras.losses.mean_absolute_error, loss_weights=[1.0, 0.6, 0.6],
-                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.02, momentum=0.9))
+    model.compile(loss=tf.keras.losses.mean_absolute_error, loss_weights=[1.0, 0.5, 0.5],
+                  optimizer=tf.keras.optimizers.SGD(learning_rate=0.03, momentum=0.9))
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    cnt_batch = 2500 / 4
+    batch_size = 4
+    cnt_batch = 2500 / batch_size
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
 
@@ -48,10 +49,7 @@ if __name__ == '__main__':
         images_np = np.asarray(images, dtype=np.float)
         labels_np = np.asarray(labels)
 
-        labels_np = tf.reshape(labels_np, [12, None])
-        tf.unravel_index # ?
-
-        print(labels_np.shape)
+        labels_np = tf.reshape(labels_np, [3 * batch_size])
 
         labels_x = labels_np[0::3]
         labels_y = labels_np[1::3]
@@ -67,9 +65,9 @@ if __name__ == '__main__':
 
         model.save_weights('weights/weights.h5')
 
-        idx = 0
+        """idx = 0
         for actual in model.predict_on_batch(images_np):
             print("difference: {}".format(np.abs(np.array(labels_np[idx]) - np.array(actual))))
             idx += 1
-
+        """
         i = (i + 1) % cnt_batch
