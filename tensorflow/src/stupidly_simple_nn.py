@@ -16,14 +16,16 @@ if __name__ == '__main__':
     hidden_pool_3 = tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2")(hidden_conv_2)
     hidden_conv_4 = tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3")(hidden_pool_3)
     hidden_flat_5 = tf.keras.layers.Flatten(name="flatten_1")(hidden_conv_4)
-    output = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)(hidden_flat_5)
+    output_x = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)(hidden_flat_5)
+    output_y = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)(hidden_flat_5)
+    output_z = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax)(hidden_flat_5)
 
-    sgd = tf.keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-    model = tf.keras.Model(inputs=input, outputs=[output, output, output])
+    sgd = tf.keras.optimizers.SGD(lr=0.03, decay=1e-6, momentum=0.9, nesterov=True)
+    model = tf.keras.Model(inputs=input, outputs=[output_x, output_y, output_z])
 
     model.summary()
 
-    # tf.keras.utils.plot_model(model, to_file='model.png')
+    tf.keras.utils.plot_model(model, to_file='model.png')
 
     model.compile(loss=tf.keras.losses.mean_absolute_error, loss_weights=[1.0, 0.5, 0.5],
                   optimizer=tf.keras.optimizers.SGD(learning_rate=0.03, momentum=0.9))
@@ -65,9 +67,11 @@ if __name__ == '__main__':
 
         model.save_weights('weights/weights.h5')
 
+        print(model.predict(np.array(images_np)))
+
         """idx = 0
-        for actual in model.predict_on_batch(images_np):
-            print("difference: {}".format(np.abs(np.array(labels_np[idx]) - np.array(actual))))
-            idx += 1
-        """
+        for estimated in model.predict(images_np):
+            print("actual: {} estimated: {}".format(np.array([labels_x[idx], labels_y[idx], labels_z[idx]]), estimated))
+            idx += 1"""
+
         i = (i + 1) % cnt_batch
