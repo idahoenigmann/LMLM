@@ -14,26 +14,28 @@ if __name__ == '__main__':
     file = loadData.load_images()[0]
     image_shape = loadData.get_image_dimensions(str(file)[0:(str(file).rfind("."))])
 
-    input = tf.keras.Input(shape=(image_shape[0], image_shape[1], image_shape[2]))
-    hidden_conv_0 = tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu)(input)
-    hidden_pool_1 = tf.keras.layers.MaxPooling2D(10)(hidden_conv_0)
-    hidden_conv_2 = tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu)(hidden_pool_1)
-    hidden_pool_3 = tf.keras.layers.MaxPooling2D(10)(hidden_conv_2)
-    hidden_conv_4 = tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu)(hidden_pool_3)
-    hidden_flat_5 = tf.keras.layers.Flatten()(hidden_conv_4)
-    output_x = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax, name="output_x")(hidden_flat_5)
-    output_y = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax, name="output_y")(hidden_flat_5)
-    output_z = tf.keras.layers.Dense(1, activation=tf.keras.activations.softmax, name="output_z")(hidden_flat_5)
+    model = tf.keras.Sequential([
+        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0], image_shape[1],
+                                                                                         image_shape[2]),
+                               name="conv2D_1"),
+        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
+        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
+        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
+        tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
+        # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
+        tf.keras.layers.Flatten(name="flatten_1"),
+        # tf.keras.layers.Dense(128, name="dense_1"),
+        tf.keras.layers.Dense(3, name="dense_2")
+    ])
 
-    sgd = tf.keras.optimizers.SGD(lr=0.03, decay=1e-6, momentum=0.9, nesterov=True)
-    model = tf.keras.Model(inputs=input, outputs=[output_x, output_y, output_z])
+    sgd = tf.keras.optimizers.SGD(learning_rate=0.2, momentum=0.9, nesterov=True)
 
     model.summary()
 
     if MODEL_IMAGE:
         tf.keras.utils.plot_model(model, to_file='model.png')
 
-    model.compile(loss=tf.keras.losses.mean_absolute_error, loss_weights=[1.0, 0.5, 0.5], optimizer=sgd)
+    model.compile(loss=tf.keras.losses.mean_absolute_error, optimizer=sgd)
 
     if os.path.isfile('weights/weights.h5'):
         model.load_weights('weights/weights.h5')
@@ -67,17 +69,15 @@ if __name__ == '__main__':
         labels_y = tf.reshape(labels_np, [3 * batch_size])[1::3]
         labels_z = tf.reshape(labels_np, [3 * batch_size])[2::3]
 
-        model.fit(images_np, [labels_x, labels_y, labels_z], epochs=3, verbose=2, steps_per_epoch=None)
+        model.fit(images_np, labels_np, epochs=3, verbose=2, steps_per_epoch=None)
 
         model.save_weights('weights/weights.h5')
 
         if PREDICT:
-            print(model.predict(images_np))
-            print(labels_np)
+            prediction = model.predict(images_np)
 
-            """idx = 0
-            for estimated in model.predict(images_np):
-                print("actual: {} estimated: {}".format(np.array([labels_x[idx], labels_y[idx], labels_z[idx]]), estimated))
-                idx += 1"""
+            for idx in range(len(prediction)):
+                print(
+                    "idx - {}     prediction - {}    actual - {}".format(idx, prediction[idx], labels_np[idx]))
 
         i = (i + 1) % cnt_batch
