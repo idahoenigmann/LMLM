@@ -45,8 +45,8 @@ def load_images():
 def get_label(file_path):
     file = open("{}-2.txt".format(file_path), "r")
     x = float(file.readline()) / 10.0
-    y = float(file.readline()) / 10.0
-    z = float(file.readline()) / 10.0
+    y = float(file.readline()) / 16.0 + 0.5
+    z = float(file.readline()) / 10.0 + 0.5
     file.close()
     return [x, y, z]
 
