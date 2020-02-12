@@ -42,11 +42,23 @@ def load_images():
     return list(data_dir.glob('*.jpg'))
 
 
+def normalize(x, y, z):
+    x = float(x) / 10.0
+    y = float(y) / 16.0 + 0.5
+    z = float(z) / 10.0 + 0.5
+    return [x, y, z]
+
+
+def unnormalize(x, y, z):
+    x = float(x) * 10.0
+    y = (float(y) - 0.5) * 16.0
+    z = (float(z) - 0.5) * 10.0
+    return [x, y, z]
+
+
 def get_label(file_path):
     file = open("{}-2.txt".format(file_path), "r")
-    x = float(file.readline()) / 10.0
-    y = float(file.readline()) / 16.0 + 0.5
-    z = float(file.readline()) / 10.0 + 0.5
+    x, y, z = normalize(float(file.readline()), float(file.readline()), float(file.readline()))
     file.close()
     return [x, y, z]
 

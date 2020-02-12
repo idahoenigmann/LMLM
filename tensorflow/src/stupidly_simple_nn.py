@@ -9,26 +9,33 @@ SHOW_IMAGES = False
 PREDICT = True
 MODEL_IMAGE = False
 
-
 if __name__ == '__main__':
     file = loadData.load_images()[0]
     image_shape = loadData.get_image_dimensions(str(file)[0:(str(file).rfind("."))])
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0], image_shape[1],
+        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0],
+                                                                                         image_shape[1],
                                                                                          image_shape[2]),
                                name="conv2D_1"),
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.sigmoid, name="activation_1"),
+
         tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.sigmoid, name="activation_2"),
+
         tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
         # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.sigmoid, name="activation_3"),
+
         tf.keras.layers.Flatten(name="flatten_1"),
-        # tf.keras.layers.Dense(128, name="dense_1"),
-        tf.keras.layers.Dense(3, name="dense_2")
+        tf.keras.layers.Dense(64, name="dense_1"),
+        tf.keras.layers.Dense(3, activation=tf.keras.activations.sigmoid, name="dense_2"),
+        tf.keras.layers.LeakyReLU()
     ])
 
-    sgd = tf.keras.optimizers.SGD(learning_rate=0.2, momentum=0.9, nesterov=True)
+    sgd = tf.keras.optimizers.SGD(learning_rate=0.15, momentum=0.0, nesterov=False)
 
     model.summary()
 
@@ -69,7 +76,7 @@ if __name__ == '__main__':
         labels_y = tf.reshape(labels_np, [3 * batch_size])[1::3]
         labels_z = tf.reshape(labels_np, [3 * batch_size])[2::3]
 
-        model.fit(images_np, labels_np, epochs=3, verbose=2, steps_per_epoch=None)
+        model.fit(images_np, labels_np, epochs=1, verbose=2, steps_per_epoch=None)
 
         model.save_weights('weights/weights.h5')
 
@@ -77,7 +84,12 @@ if __name__ == '__main__':
             prediction = model.predict(images_np)
 
             for idx in range(len(prediction)):
-                print(
-                    "idx - {}     prediction - {}    actual - {}".format(idx, prediction[idx], labels_np[idx]))
+                actual_un = loadData.unnormalize(labels_np[idx][0], labels_np[idx][1], labels_np[idx][2])
+                prediction_un = loadData.unnormalize(prediction[idx][0], prediction[idx][1], prediction[idx][2])
+
+                print("idx - {:2}     prediction - [{:0<8.5f} {:0<8.5f} {:0<8.5f}]    ".format(idx, prediction_un[0],
+                                                                                               prediction_un[1],
+                                                                                               prediction_un[2]) \
+                      + "actual - [{:0<8.5f} {:0<8.5f} {:0<8.5f}]".format(actual_un[0], actual_un[1], actual_un[2]))
 
         i = (i + 1) % cnt_batch
