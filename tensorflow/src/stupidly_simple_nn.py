@@ -14,25 +14,26 @@ if __name__ == '__main__':
     image_shape = loadData.get_image_dimensions(str(file)[0:(str(file).rfind("."))])
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0],
+        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.linear, input_shape=(image_shape[0],
                                                                                          image_shape[1],
                                                                                          image_shape[2]),
                                name="conv2D_1"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_1"),
+
+        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.linear, name="conv2D_2"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_2"),
+
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
-        tf.keras.layers.Activation(activation=tf.keras.activations.sigmoid, name="activation_1"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_3"),
 
-        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
+        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.linear, name="conv2D_3"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_4"),
+
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
-        tf.keras.layers.Activation(activation=tf.keras.activations.sigmoid, name="activation_2"),
-
-        tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
-        # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
-        tf.keras.layers.Activation(activation=tf.keras.activations.sigmoid, name="activation_3"),
 
         tf.keras.layers.Flatten(name="flatten_1"),
-        tf.keras.layers.Dense(64, name="dense_1"),
-        tf.keras.layers.Dense(3, activation=tf.keras.activations.sigmoid, name="dense_2"),
-        tf.keras.layers.LeakyReLU()
+
+        tf.keras.layers.Dense(3, activation=tf.keras.activations.sigmoid, name="dense_1")
     ])
 
     sgd = tf.keras.optimizers.SGD(learning_rate=0.15, momentum=0.0, nesterov=False)
