@@ -4,6 +4,8 @@ import loadData
 import os.path
 import PIL
 import matplotlib.pyplot as plt
+import signal
+import sys
 
 SHOW_IMAGES = False
 PREDICT = True
@@ -51,9 +53,15 @@ if __name__ == '__main__':
     if os.path.isfile('weights/weights.h5'):
         model.load_weights('weights/weights.h5')
 
+    def save_weights(*args):
+        model.save_weights('weights/weights.h5')
+        sys.exit()
+
+    signal.signal(signal.SIGINT, save_weights)
+
     print("total image count: {}".format(loadData.get_image_count()))
 
-    batch_size = 20
+    batch_size = 1
     cnt_batch = 2500 / batch_size
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
@@ -81,8 +89,6 @@ if __name__ == '__main__':
         labels_z = tf.reshape(labels_np, [3 * batch_size])[2::3]
 
         model.fit(images_np, labels_np, epochs=1, verbose=1, steps_per_epoch=None)
-
-        model.save_weights('weights/weights.h5')
 
         if PREDICT:
             prediction = model.predict(images_np)
