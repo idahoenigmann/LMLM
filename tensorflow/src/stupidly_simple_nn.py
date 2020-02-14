@@ -9,6 +9,7 @@ SHOW_IMAGES = False
 PREDICT = True
 MODEL_IMAGE = False
 NORMALIZE_OUTPUT = False
+DRAW_LOSS = True
 
 if __name__ == '__main__':
     file = loadData.load_images()[0]
@@ -58,6 +59,13 @@ if __name__ == '__main__':
     cnt_batch = 2500 / batch_size
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
+
+    hl, = plt.plot([], [])          # TODO
+
+    def update_line(hl, new_data):
+        hl.set_xdata(np.append(hl.get_xdata(), new_data))
+        hl.set_ydata(np.append(hl.get_ydata(), new_data))
+        plt.draw()
 
     while True:
         images = []
