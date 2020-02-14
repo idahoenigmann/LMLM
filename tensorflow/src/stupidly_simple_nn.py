@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    batch_size = 1
+    batch_size = 20
     cnt_batch = 2500 / batch_size
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
