@@ -39,14 +39,15 @@ if __name__ == '__main__':
         tf.keras.layers.Dense(3, activation=tf.keras.activations.sigmoid, name="dense_1")
     ])
 
-    sgd = tf.keras.optimizers.SGD(learning_rate=0.15, momentum=0.0, nesterov=False)
+    sgd = tf.keras.optimizers.SGD(learning_rate=0.05, momentum=0.0, nesterov=False)
 
     model.summary()
 
     if MODEL_IMAGE:
         tf.keras.utils.plot_model(model, to_file='model.png')
 
-    model.compile(loss=tf.keras.losses.mean_absolute_error, optimizer=sgd)
+    model.compile(loss=tf.keras.losses.mean_absolute_error, metrics=[tf.keras.losses.mean_absolute_percentage_error],
+                  optimizer=sgd)
 
     if os.path.isfile('weights/weights.h5'):
         model.load_weights('weights/weights.h5')

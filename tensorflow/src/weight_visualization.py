@@ -59,17 +59,28 @@ if __name__ == '__main__':
     image_shape = loadData.get_image_dimensions(str(file)[0:(str(file).rfind("."))])
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.relu, input_shape=(image_shape[0], image_shape[1],
+        tf.keras.layers.Conv2D(32, 5, activation=tf.keras.activations.linear, input_shape=(image_shape[0],
+                                                                                         image_shape[1],
                                                                                          image_shape[2]),
                                name="conv2D_1"),
-        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_1"),
-        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.relu, name="conv2D_2"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_1"),
+        tf.keras.layers.MaxPooling2D(5, name="maxPooling2D_1"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_2"),
+
+        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.linear, name="conv2D_2"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_3"),
+
         tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_2"),
-        tf.keras.layers.Conv2D(32, 4, activation=tf.keras.activations.relu, name="conv2D_3"),
-        # tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_4"),
+
+        tf.keras.layers.Conv2D(64, 5, activation=tf.keras.activations.linear, name="conv2D_3"),
+        tf.keras.layers.Activation(activation=tf.keras.activations.relu, name="activation_5"),
+
+        tf.keras.layers.MaxPooling2D(10, name="maxPooling2D_3"),
+
         tf.keras.layers.Flatten(name="flatten_1"),
-        # tf.keras.layers.Dense(128, name="dense_1"),
-        tf.keras.layers.Dense(3, name="dense_2")
+
+        tf.keras.layers.Dense(3, activation=tf.keras.activations.sigmoid, name="dense_1")
     ])
 
     model.summary()
@@ -81,9 +92,8 @@ if __name__ == '__main__':
 
     # plot_conv_weights(model, "conv2D_1", (5, 5, 3 * 32))
     # plot_conv_weights(model, "conv2D_2", (5, 5, 32 * 64), True)
-    # plot_conv_weights(model, "conv2D_3", (4, 4, 64 * 32))
-    plot_conv_weights(model, "dense_2", (17, 128, 3))
-    # plot_conv_weights(model, "dense_1", (4 * 18, 64))
+    # plot_conv_weights(model, "conv2D_3", (5, 5, 64 * 64))
+    plot_conv_weights(model, "dense_1", (3, 3, 64))
 
     """
     # yellow = high number
