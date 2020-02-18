@@ -3,14 +3,14 @@ import os
 import numpy as np
 from argparse import ArgumentParser
 
-# -d $USE_DIRLIST -o all
+# -d USE_DIRLIST -o all
 options = ['greyscale', 'saturated', 'downscaled', 'cropping', 'brightness',
            'all']
 path = '../renders/'
 dirlist = ['Vase.XS', 'Vase.S', 'Vase.M',
-           'Vase.L', 'Vase.XL', 'Suzanne.XS',
-           'Suzanne.S', 'Suzanne.M', 'Suzanne.L',
-           'Suzanne.XL']
+           'Vase.L', 'Vase.XL']#, 'Suzanne.XS',
+           #'Suzanne.S', 'Suzanne.M', 'Suzanne.L',
+           #'Suzanne.XL']"""
 
 parser = ArgumentParser(description='Manipulate images in directory')
 parser.add_argument('-d', help='the directory to process',
@@ -86,13 +86,13 @@ def _generate(option, directory):
 def generate(args):
     if args.o == 'all':
         for option in options[0:-1]:
-            if args.d == '$USE_DIRLIST':
+            if args.d == 'USE_DIRLIST':
                 for directory in dirlist:
                     _generate(option, path + directory)
             else:
                 _generate(option, args.d)
     else:
-        if args.d == '$USE_DIRLIST':
+        if args.d == 'USE_DIRLIST':
             for directory in dirlist:
                 _generate(args.o, directory)
         else:
