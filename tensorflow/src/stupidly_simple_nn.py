@@ -11,7 +11,8 @@ SHOW_IMAGES = False
 PREDICT = True
 MODEL_IMAGE = False
 NORMALIZE_OUTPUT = False
-DRAW_LOSS = True
+DRAW_LOSS = False
+TRAIN = True
 
 if __name__ == '__main__':
     file = loadData.load_images()[0]
@@ -63,8 +64,8 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    batch_size = 20
-    cnt_batch = 2500 / batch_size
+    batch_size = 10
+    cnt_batch = loadData.get_image_count() / batch_size
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
 
@@ -97,7 +98,8 @@ if __name__ == '__main__':
         labels_y = tf.reshape(labels_np, [3 * batch_size])[1::3]
         labels_z = tf.reshape(labels_np, [3 * batch_size])[2::3]
 
-        model.fit(images_np, labels_np, epochs=1, verbose=1, steps_per_epoch=None)
+        if TRAIN:
+            model.fit(images_np, labels_np, epochs=1, verbose=1, steps_per_epoch=None)
 
         if PREDICT:
             prediction = model.predict(images_np)

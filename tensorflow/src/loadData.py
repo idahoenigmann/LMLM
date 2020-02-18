@@ -13,8 +13,12 @@ from keras.preprocessing.image import load_img, img_to_array
 
 """
 
-origin = 'file:///home/ida/.keras/datasets/suzanne_all_1k.zip'
+origin = 'file:///home/lord/.keras/datasets/suzanne_all_1k.zip'
 fname = 'suzanne_all_1k'
+
+"""
+origin = 'file:///home/lord/.keras/datasets/vase_all.zip'
+fname = 'vase_all'"""
 
 
 def load_images():
