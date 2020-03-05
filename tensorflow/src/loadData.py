@@ -18,7 +18,7 @@ fname = 'suzanne_all_1k'
 
 """
 origin = 'file:///home/lord/.keras/datasets/vase_all.zip'
-fname = 'vase_all'
+fname = 'bebop'
 
 
 def load_images():

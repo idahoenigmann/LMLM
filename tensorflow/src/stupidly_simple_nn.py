@@ -12,7 +12,7 @@ PREDICT = True
 MODEL_IMAGE = False
 NORMALIZE_OUTPUT = False
 DRAW_LOSS = False
-TRAIN = True
+TRAIN = False
 
 if __name__ == '__main__':
     file = loadData.load_images()[0]
@@ -64,17 +64,10 @@ if __name__ == '__main__':
 
     print("total image count: {}".format(loadData.get_image_count()))
 
-    batch_size = 10
+    batch_size = 1
     cnt_batch = loadData.get_image_count() / batch_size
     percentage = int(loadData.get_image_count() / cnt_batch)
     i = 0
-
-    hl, = plt.plot([], [])          # TODO
-
-    def update_line(hl, new_data):
-        hl.set_xdata(np.append(hl.get_xdata(), new_data))
-        hl.set_ydata(np.append(hl.get_ydata(), new_data))
-        plt.draw()
 
     while True:
         images = []
@@ -118,3 +111,9 @@ if __name__ == '__main__':
                       + "actual - [{:0<8.5f} {:0<8.5f} {:0<8.5f}]".format(actual_un[0], actual_un[1], actual_un[2]))
 
         i = (i + 1) % cnt_batch
+
+
+    """
+    images 0 to 1:
+    idx -  0     prediction - [3.451700 0.146270 -1.12407]    actual - [0.130000 0.030000 0.020000]
+    """
